@@ -20,7 +20,11 @@
 local multicraft_developers = {
 	"Maksim Gamarnik (MoNTE48) <MoNTE48@mail.ua>",
 	"Bektur Mambetov (ubulem) <berkut87@gmail.com>",
+	"Alexander  Zavrin (Ransom.00)",
 	"sfan5 <sfan5@live.de>",
+	"stujones11 Stuart Jones <stujones111@gmail.com>",
+	"paramat",
+	"And other people who helped make the world better!",
 }
 
 local core_developers = {
@@ -98,8 +102,8 @@ return {
 			"label[0.1,0.5;https://github.com/MultiCraftProject]" ..
 			"label[0.1,1.0;LGPLv3.0+ and CC-BY-SA 3.0]" ..
 			"tablecolumns[color;text]" ..
-			"tableoptions[background=#00000000;highlight=#00000000;border=false]" ..
-			"table[0,1.6;11.75,3.5;list_credits;" ..
+			"tableoptions[background=#999999;highlight=#00000000;border=true]" ..
+			"table[0,1.6;11.8,3.8;list_credits;" ..
 			"#FFFF00," .. fgettext("MultiCraft Developers") .. ",," ..
 			buildCreditList(multicraft_developers) .. ",,," ..
 			"#FFFF00," .. fgettext("Minetest Developers") .. ",," ..

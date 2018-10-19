@@ -32,11 +32,11 @@ class RateMe {
     private static Date mInstallDate = new Date();
     private static int mLaunchTimes = 0;
     private static boolean mOptOut = false;
-    private static Callback sCallback = null;
+    private static DialogsCallback sCallback = null;
 
     private static WeakReference<Activity> mainActivityRef = null;
 
-    static void setCallback(Callback callback) {
+    static void setListener(DialogsCallback callback) {
         sCallback = callback;
     }
 
@@ -74,8 +74,9 @@ class RateMe {
         }
     }
 
-    static void showRateDialog(final Context context) {
-        final Dialog dialog = new Dialog(context, R.style.DialogTheme);
+    static void showRateDialog() {
+        final Activity activity = mainActivityRef.get();
+        final Dialog dialog = new Dialog(activity, R.style.DialogTheme);
         dialog.setCanceledOnTouchOutside(false);
         if (Build.VERSION.SDK_INT >= 19) {
             dialog.getWindow().getDecorView().setSystemUiVisibility(
@@ -86,25 +87,25 @@ class RateMe {
         dialog.setContentView(R.layout.rate_dialog);
         dialog.setTitle(R.string.rta_dialog_title);
 
-        RatingBar ratingBar = (RatingBar) dialog.findViewById(R.id.ratingBar);
+        RatingBar ratingBar = dialog.findViewById(R.id.ratingBar);
         ratingBar.setOnRatingBarChangeListener(new RatingBar.OnRatingBarChangeListener() {
             @Override
             public void onRatingChanged(RatingBar ratingBar, float rating, boolean fromUser) {
                 if (rating >= 3) {
                     if (sCallback != null) {
-                        sCallback.onPositive();
+                        sCallback.onPositive("RateMe");
                     }
                     dialog.dismiss();
-                    String appPackage = context.getPackageName();
+                    String appPackage = activity.getPackageName();
                     Intent intent = new Intent(Intent.ACTION_VIEW, Uri.parse(GOOGLE_PLAY + appPackage));
-                    context.startActivity(intent);
-                    setOptOut(context, true);
+                    activity.startActivity(intent);
+                    setOptOut(activity, true);
                 } else {
                     if (sCallback != null) {
-                        sCallback.onNegative();
+                        sCallback.onNegative("RateMe");
                     }
                     dialog.dismiss();
-                    clearSharedPreferences(context);
+                    clearSharedPreferences(activity);
                 }
             }
         });
@@ -112,21 +113,21 @@ class RateMe {
             @Override
             public void onCancel(DialogInterface dialog) {
                 if (sCallback != null) {
-                    sCallback.onCancelled();
+                    sCallback.onCancelled("RateMe");
                 }
-                clearSharedPreferences(context);
+                clearSharedPreferences(activity);
             }
         });
-        if (mainActivityRef.get() != null && !mainActivityRef.get().isFinishing()) {
+        if (!activity.isFinishing()) {
             dialog.show();
         } else {
             if (sCallback != null) {
-                sCallback.onNegative();
+                sCallback.onNegative("RateMe");
             }
         }
     }
 
-    private static void clearSharedPreferences(Context context) {
+    private static void clearSharedPreferences(Activity context) {
         SharedPreferences pref = context.getSharedPreferences(PREF_NAME, Context.MODE_PRIVATE);
         Editor editor = pref.edit();
         editor.remove(KEY_INSTALL_DATE);
@@ -134,7 +135,7 @@ class RateMe {
         editor.apply();
     }
 
-    private static void setOptOut(final Context context, boolean optOut) {
+    private static void setOptOut(final Activity context, boolean optOut) {
         SharedPreferences pref = context.getSharedPreferences(PREF_NAME, Context.MODE_PRIVATE);
         Editor editor = pref.edit();
         editor.putBoolean(KEY_OPT_OUT, optOut);
@@ -168,11 +169,4 @@ class RateMe {
         }
     }
 
-    interface Callback {
-        void onPositive();
-
-        void onNegative();
-
-        void onCancelled();
-    }
 }

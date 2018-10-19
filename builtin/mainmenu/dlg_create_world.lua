@@ -16,8 +16,15 @@
 --51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
 
 local function create_world_formspec(dialogdata)
-	local mapgens = core.get_mapgen_names()
-
+	local mapgens = {}
+	local mapgens_available = core.settings:get("mapgens_available")
+	if mapgens_available then
+		for mg in string.gmatch(mapgens_available, '[^,%s]+') do
+			table.insert(mapgens, mg)
+		end
+	else
+		mapgens = core.get_mapgen_names()
+	end
 	local current_seed = core.settings:get("fixed_map_seed") or ""
 	local current_mg   = core.settings:get("mg_name")
 
@@ -46,30 +53,22 @@ local function create_world_formspec(dialogdata)
 
 	current_seed = core.formspec_escape(current_seed)
 	local retval =
-		"size[11.5,3,false]" ..
+		"size[11.5,3.75,false]" ..
+		"background[0,0;11.5,3;" .. core.formspec_escape(defaulttexturedir ..
+        "bg_dialog.png") .. ";true]" ..
 		"label[2,0;" .. fgettext("World name") .. "]"..
 		"field[4.5,0.4;6,0.5;te_world_name;;]" ..
 
 		"label[2,1;" .. fgettext("Seed") .. "]"..
 		"field[4.5,1.4;6,0.5;te_seed;;".. current_seed .. "]" ..
 
-		--"label[2,2;" .. fgettext("Mapgen") .. "]"..
-		--"dropdown[4.2,2;6.3;dd_mapgen;" .. mglist .. ";" .. selindex .. "]" ..
+		"label[2,2;" .. fgettext("Mapgen") .. "]"..
+		"dropdown[4.2,2;6.3;dd_mapgen;" .. mglist .. ";" .. selindex .. "]" ..
 
 		"dropdown[600.2,6;6.3;games;" .. gamemgr.gamelist() .. ";1]" ..
 
-		"button[3.25,2.6;2.5,0.5;world_create_confirm;" .. fgettext("Create") .. "]" ..
-		"button[5.75,2.6;2.5,0.5;world_create_cancel;" .. fgettext("Cancel") .. "]"
-
-	if #gamemgr.games == 0 then
-		retval = retval .. "box[2,4;8,1;#ff8800]label[2.25,4;" ..
-				fgettext("You have no subgames installed.") .. "]label[2.25,4.4;" ..
-				fgettext("Download one from minetest.net") .. "]"
-	elseif #gamemgr.games == 1 and gamemgr.games[1].id == "minimal" then
-		retval = retval .. "box[1.75,4;8.7,1;#ff8800]label[2,4;" ..
-				fgettext("Warning: The minimal development test is meant for developers.") .. "]label[2,4.4;" ..
-				fgettext("Download a subgame, such as minetest_game, from minetest.net") .. "]"
-	end
+		"button[3.25,3.4;2.5,0.5;world_create_confirm;" .. fgettext("Create") .. "]" ..
+		"button[5.75,3.4;2.5,0.5;world_create_cancel;" .. fgettext("Cancel") .. "]"
 
 	return retval
 

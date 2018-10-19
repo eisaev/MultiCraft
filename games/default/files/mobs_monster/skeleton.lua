@@ -1,7 +1,7 @@
 mobs:register_mob("mobs_monster:skeleton", {
 		type = "monster",
 		visual = "mesh",
-		mesh = "mobs_zombie.x",
+		mesh = "mobs_zombie.b3d",
 		textures = {
 			{"mobs_skeleton.png"},
 		},
@@ -39,15 +39,24 @@ mobs:register_mob("mobs_monster:skeleton", {
 			{name = "default:bone", chance = 2, min = 1, max = 1},
 			{name = "default:bone", chance = 2, min = 1, max = 1}
 		},
+		after_activate = function(self, staticdata, def, dtime)
+			-- replace skeleton using the old directx model
+			if self.mesh == "mobs_zombie.x" then
+				local pos = self.object:get_pos()
+				if pos then
+					minetest.add_entity(pos, self.name)
+					self.object:remove()
+				end
+			end
+		end,
 	})
 
 mobs:spawn({
 	name = "mobs_monster:skeleton",
-	nodes = {"default:dirt", "default:sandstone", "default:sand", "default:stone", "default:snowblock", "default:dirt_with_snow", "default:dirt_with_grass", "default:cobble", "default:mossycobble"},
+	nodes = {"default:dirt", "default:sandstone", "default:sand", "default:redsand", "default:stone", "default:snowblock", "default:dirt_with_snow", "default:dirt_with_grass", "default:cobble", "default:mossycobble"},
 	min_light = 0,
 	max_light = 10,
 	chance = 7000,
-	active_object_count = 1,
 	min_height = -50,
 	max_height = 31000,
 })	

@@ -9,23 +9,26 @@ import android.view.WindowManager;
 
 public class GameActivity extends NativeActivity {
     static {
-        System.loadLibrary("multicraft");
+        System.loadLibrary("MultiCraft");
     }
 
     private int messageReturnCode;
     private String messageReturnValue;
+    private int height, width;
 
     public static native void putMessageBoxResult(String text);
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        Bundle bundle = getIntent().getExtras();
+        height = bundle != null ? bundle.getInt("height", 0) : getResources().getDisplayMetrics().heightPixels;
+        width = bundle != null ? bundle.getInt("width", 0) : getResources().getDisplayMetrics().widthPixels;
+        // pf = PreferencesHelper.getInstance(this);
+        // if (pf.isAdsEnabled()) setAdsCallbacks(this);
         getWindow().addFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON);
-//        if (!isAdsDisabled())
-//            startAd(this, true);
         messageReturnCode = -1;
         messageReturnValue = "";
-        makeFullScreen();
     }
 
 
@@ -48,8 +51,10 @@ public class GameActivity extends NativeActivity {
     @Override
     protected void onRestart() {
         super.onRestart();
-//        if (!isAdsDisabled())
-//            startAd(this, false);
+        /*if (pf.isAdsEnabled()) {
+            stopAd();
+            startAd(this, false);
+        }*/
     }
 
     @Override
@@ -61,7 +66,8 @@ public class GameActivity extends NativeActivity {
     @Override
     protected void onStop() {
         super.onStop();
-//        stopAd();
+        /*if (pf.isAdsEnabled())
+            stopAd();*/
     }
 
     @Override
@@ -110,11 +116,11 @@ public class GameActivity extends NativeActivity {
     }
 
     public int getDisplayHeight() {
-        return getResources().getDisplayMetrics().heightPixels;
+        return height;
     }
 
     public int getDisplayWidth() {
-        return getResources().getDisplayMetrics().widthPixels;
+        return width;
     }
 
 }

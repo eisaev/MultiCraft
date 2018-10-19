@@ -1211,6 +1211,7 @@ public:
 	void pauseGame();
 	void customStatustext(const std::wstring &text, float time);
 #endif
+	void pauseAnimation(bool is_paused);
 
 protected:
 
@@ -1223,7 +1224,6 @@ protected:
 	bool initSound();
 	bool createSingleplayerServer(const std::string &map_dir,
 			const SubgameSpec &gamespec, u16 port, std::string *address);
-	bool autoMigrateSingleplayerWorld(const std::string map_dir);
 
 	// Client creation
 	bool createClient(const std::string &playername,
@@ -1465,6 +1465,7 @@ private:
 	bool m_cache_hold_aux1;
 	bool m_android_chat_open;
 #endif
+	core::list<scene::ISceneNode *> m_anim_nodes;
 };
 
 Game::Game() :
@@ -1862,69 +1863,11 @@ bool Game::createSingleplayerServer(const std::string &map_dir,
 		return false;
 	}
 
-	autoMigrateSingleplayerWorld(map_dir);
-
 	server = new Server(map_dir, gamespec, simple_singleplayer_mode,
 			    bind_addr.isIPv6(), false);
 
 	server->start(bind_addr);
 
-	return true;
-}
-
-bool Game::autoMigrateSingleplayerWorld(const std::string map_dir)
-{
-	const std::string new_backend = "leveldb";
-
-#if !defined(__ANDROID__) && !defined(__IOS__)
-	infostream << "Auto-migration disabled on this platform..." << std::endl;
-	return false;
-#endif
-
-	// Check if needed for this world
-	Settings world_mt;
-	std::string world_mt_path = map_dir + DIR_DELIM + "world.mt";
-	if (!world_mt.readConfigFile(world_mt_path.c_str())) {
-		infostream << "Skipping migration check as world.mt can't be read." << std::endl;
-		return false;
-	}
-	if (!world_mt.exists("backend"))
-		return false;
-	std::string old_backend = world_mt.get("backend");
-	if (old_backend == new_backend) {
-		infostream << "Backend matches, not migrating world!" << std::endl;
-		return false;
-	}
-
-	// Do migration
-	showOverlayMessage(wgettext("Migrating world..."), 0, 7.5);
-	infostream << "Doing auto-migration to " << new_backend << " backend." << std::endl;
-	MapDatabase *old_db = ServerMap::createDatabase(old_backend, map_dir, world_mt),
-		*new_db = ServerMap::createDatabase(new_backend, map_dir, world_mt);
-
-	std::vector<v3s16> blocks;
-	old_db->listAllLoadableBlocks(blocks);
-	new_db->beginSave();
-	for (std::vector<v3s16>::const_iterator it = blocks.begin(); it != blocks.end(); ++it) {
-		std::string data;
-		old_db->loadBlock(*it, &data);
-		if (!data.empty())
-			new_db->saveBlock(*it, data);
-		else
-			errorstream << "Failed to load block " << PP(*it) << ", skipping it." << std::endl;
-	}
-	new_db->endSave();
-	delete old_db;
-	delete new_db;
-
-	world_mt.set("backend", new_backend);
-	world_mt.updateConfigFile(world_mt_path.c_str());
-
-	// Delete old map data if possible
-	if (old_backend == "sqlite3")
-		fs::DeleteSingleFileOrEmptyDirectory(map_dir + DIR_DELIM + "map.sqlite");
-
-	infostream << "Migration successful!" << std::endl;
 	return true;
 }
 
@@ -2795,7 +2738,10 @@ void Game::toggleFreeMove()
 
 void Game::toggleFreeMoveAlt()
 {
+	bool free_move = !g_settings->getBool("free_move");
+	bool creative = !g_settings->getBool("creative_mode");
 	if (m_cache_doubletap_jump && runData.jump_timer < 0.15f)
+		if (!free_move || !creative)
 		toggleFreeMove();
 
 	runData.reset_jump_timer = true;
@@ -3176,6 +3122,9 @@ inline void Game::step(f32 *dtime)
 	if (can_be_and_is_paused) {	// This is for a singleplayer server
 		*dtime = 0;             // No time passes
 	} else {
+		if (simple_singleplayer_mode && !m_anim_nodes.empty())
+			pauseAnimation(false);
+
 		if (server != NULL) {
 			//TimeTaker timer("server->step(dtime)");
 			server->step(*dtime);
@@ -4628,6 +4577,30 @@ void Game::customStatustext(const std::wstring &text, float time)
 }
 #endif
 
+void Game::pauseAnimation(bool is_paused)
+{
+	core::list<scene::ISceneNode *> nodes = (is_paused) ?
+			smgr->getRootSceneNode()->getChildren() : m_anim_nodes;
+
+	for (core::list<scene::ISceneNode *>::ConstIterator it = nodes.begin();
+			it != nodes.end(); ++it) {
+		if ((*it) && (*it)->getType() == scene::ESNT_ANIMATED_MESH) {
+			scene::IAnimatedMeshSceneNode *node =
+					(scene::IAnimatedMeshSceneNode*)(*it);
+			if (is_paused) {
+				if (node->getLoopMode()) {
+					m_anim_nodes.push_back(node);
+					node->setLoopMode(false);
+				}
+			} else {
+				node->setLoopMode(true);
+			}
+		}
+	}
+	if (!is_paused)
+		m_anim_nodes.clear();
+}
+
 /****************************************************************************/
 /****************************************************************************
  Shutdown / cleanup
@@ -4791,6 +4764,9 @@ void Game::showPauseMenu()
 	create_formspec_menu(&current_formspec, client, device, &input->joystick, fs_src, txt_dst);
 	current_formspec->setFocus("btn_continue");
 	current_formspec->doPause = true;
+
+	if (simple_singleplayer_mode)
+		pauseAnimation(true);
 }
 
 #ifdef DISABLE_CSM

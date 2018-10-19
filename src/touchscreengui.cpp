@@ -236,7 +236,7 @@ void TouchScreenGUI::init(ISimpleTextureSource* tsrc)
 	1 4 7
 	2 5 8
 	*/
-	
+
 	int number = 0;
 	for (int y = 0; y < 3; ++y)
 		for (int x = 0; x < 3; ++x, ++number) {
@@ -322,7 +322,7 @@ void TouchScreenGUI::init(ISimpleTextureSource* tsrc)
 	                  L"x", false, SLOW_BUTTON_REPEAT);
 
 /*#ifdef ENABLE_ANDROID_NOCLIP
-	 // init fly button 
+	 // init fly button
 	initButton(fly_id,
 			rect<s32>(m_screensize.X - (0.75*button_size),
 					m_screensize.Y - (3.25*button_size),
@@ -330,14 +330,14 @@ void TouchScreenGUI::init(ISimpleTextureSource* tsrc)
 	                m_screensize.Y - (button_size*2.5)),
 			L"fly", false, SLOW_BUTTON_REPEAT);
 
-	// init noclip button 
+	// init noclip button
 	initButton(noclip_id,
 			rect<s32>(m_screensize.X - (0.75*button_size),
 					m_screensize.Y - (4.75*button_size),
 					m_screensize.X,
 					m_screensize.Y - (button_size*4)),
 			L"clip", false, SLOW_BUTTON_REPEAT);
-	// init fast button 
+	// init fast button
 	initButton(fast_id,
 			rect<s32>(m_screensize.X - (0.75*button_size),
 	                  m_screensize.Y - (4*button_size),
@@ -346,7 +346,7 @@ void TouchScreenGUI::init(ISimpleTextureSource* tsrc)
 			L"fast", false, SLOW_BUTTON_REPEAT);
 #endif*/
 
-			
+
 
 
 #ifdef __IOS__
@@ -357,7 +357,7 @@ void TouchScreenGUI::init(ISimpleTextureSource* tsrc)
 				m_screensize.X / 2,
 				(button_size * 0.75)),
 		L"Exit", false, SLOW_BUTTON_REPEAT);
-	
+
 	/* init rangeselect button */
 	initButton(range_ios_id,
 			   rect<s32>(m_screensize.X / 2, 0,
@@ -370,7 +370,7 @@ void TouchScreenGUI::init(ISimpleTextureSource* tsrc)
 						 m_screensize.X / 2 + (button_size * 1.5),
 						 (button_size * 0.75)),
 			   L"Chat", false, SLOW_BUTTON_REPEAT);
-	
+
 #else
 // Android and Windows bar
 	/* init rangeselect button */
@@ -379,14 +379,14 @@ void TouchScreenGUI::init(ISimpleTextureSource* tsrc)
 						 m_screensize.X / 2 - (button_size * 0.375),
 						 (button_size * 0.75)),
 			   L"far", false, SLOW_BUTTON_REPEAT);
-	
+
 	/* init minimap button */
 	initButton(minimap_id,
 			   rect<s32>(m_screensize.X / 2 - (button_size * 0.375), 0,
 						 m_screensize.X / 2 + (button_size * 0.375),
 						 (button_size * 0.75)),
 			   L"minimap", false, SLOW_BUTTON_REPEAT);
-	
+
 	/* init chat button */
 	initButton(chat_id,
 					rect<s32>(m_screensize.X / 2 + (button_size * 0.375), 0,

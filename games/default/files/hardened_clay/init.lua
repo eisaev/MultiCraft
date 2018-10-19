@@ -21,8 +21,7 @@ clay.dyes = {
 minetest.register_node("hardened_clay:hardened_clay", {
     description = "Hardened Clay",
     tiles = {"hardened_clay.png"},
-    stack_max = 64,
-    groups = {cracky=3},
+    groups = {cracky = 3},
     legacy_mineral = true,
     groups = {buliding = 1},
 })
@@ -42,8 +41,7 @@ for _, row in ipairs(clay.dyes) do
         minetest.register_node("hardened_clay:"..name, {
             description = desc.." Hardened Clay",
             tiles = {"hardened_clay_stained_"..name..".png"},
-            groups = {cracky=3,hardened_clay=1, buliding = 1},
-            stack_max = 64,
+            groups = {cracky = 3,hardened_clay=1, buliding = 1},
             sounds = default.node_sound_defaults(),
         })
     if craft_color_group then

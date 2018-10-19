@@ -1,9 +1,7 @@
--- Bear
-
 	mobs:register_mob("mobs_animal:bear", {
 		type = "npc",
 		visual = "mesh",
-		mesh = "mobs_bear.x",
+		mesh = "mobs_bear.b3d",
 		rotate = 0,
 		collisionbox = {-0.5, -0.01, -0.5, 0.5, 1.49, 0.5},
 		animation = {
@@ -79,13 +77,24 @@
 					return
 				end
 				mobs:capture_mob(self, clicker, 0, 0, 80, false, nil)
+			end,
+		after_activate = function(self, staticdata, def, dtime)
+			-- replace bear using the old directx model
+			if self.mesh == "mobs_bear.x" then
+				local pos = self.object:get_pos()
+				if pos then
+					minetest.add_entity(pos, self.name)
+					self.object:remove()
+				end
 			end
+		end,
 	})
 
 mobs:spawn({
 	name = "mobs_animal:bear",
-	nodes = {"default:dirt", "default:sand", "default:snowblock", "default:dirt_with_snow", "default:dirt_with_grass"},
+	nodes = {"default:dirt", "default:sand", "default:redsand", "default:snow", "default:snowblock", "default:dirt_with_snow", "default:dirt_with_grass"},
 	min_light = 0,
+	interval = 30,
 	chance = 15000,
 	min_height = 0,
 	max_height = 31000,

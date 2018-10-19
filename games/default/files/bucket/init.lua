@@ -1,4 +1,4 @@
--- Minetest 0.4 mod: bucket
+-- MultiCraft mod: bucket
 -- See README.txt for licensing and other information.
 
 minetest.register_alias("bucket", "bucket:bucket_empty")
@@ -108,7 +108,6 @@ end
 minetest.register_craftitem("bucket:bucket_empty", {
 	description = "Empty Bucket",
 	inventory_image = "bucket.png",
-	stack_max = 99,
 	liquids_pointable = true,
 	on_use = function(itemstack, user, pointed_thing)
 		-- Must be pointing to node

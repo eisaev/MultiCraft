@@ -2,7 +2,7 @@
 <resources>
 
     <string name="app_name" translatable="false">MultiCraft</string>
-    <string name="ver" translatable="false">1.1.8</string>
+    <string name="ver" translatable="false">1.1.11.6</string>
     <!-- preparation for start -->
 
     <string name="rm_old">Preparing to update&#8230;</string>
@@ -28,4 +28,20 @@
 
     <!-- reminder -->
     <string name="message">Message</string>
+
+    <!-- in-app -->
+    <string name="buy_title">Special Offer!</string>
+    <string name="buy_message">Only for 0.99$ \nDisable ads forever \nand activate Pro features!</string>
+    <string name="close">Close</string>
+    <string name="disable">Disable Ads!</string>
+
+    <!-- no connection dialog -->
+    <string name="conn_message">MultiCraft requires an internet connection to use all game features.\nOtherwise, you will not get updates and multiplayer will be not available!</string>
+    <string name="conn_wifi">Wi-Fi</string>
+    <string name="conn_mobile">Mobile Data</string>
+
+    <!-- GDPR -->
+    <string name="gdpr_main_text" translatable="false"><b>We care about your privacy and data security. We keep this app free by showing ads.</b>\n\n<b>Can we continue to use your data to tailor ads for you?</b>\n\n<small>Our partners will collect data and use a unique identifier on your device to show you ads. By agreeing, you confirm that you are 16 years old. You can learn how we and our partners collect and use data on\n<b><a href="https://www.appodeal.com/privacy-policy">Privacy Policy</a></b>.</small></string>
+    <string name="gdpr_agree" translatable="false">Agree</string>
+    <string name="gdpr_disagree" translatable="false">Disagree</string>
 </resources>

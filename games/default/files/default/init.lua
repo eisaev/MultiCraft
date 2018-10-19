@@ -1,4 +1,4 @@
--- multicraft 0.4 mod: default
+-- MultiCraft mod: default
 -- See README.txt for licensing and other information.
 
 -- The API documentation in here was moved into doc/lua_api.txt
@@ -19,3 +19,4 @@ dofile(minetest.get_modpath("default").."/player.lua")
 dofile(minetest.get_modpath("default").."/trees.lua")
 dofile(minetest.get_modpath("default").."/aliases.lua")
 dofile(minetest.get_modpath("default").."/furnace.lua")
+dofile(minetest.get_modpath("default").."/workbench.lua")

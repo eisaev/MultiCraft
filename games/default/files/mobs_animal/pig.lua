@@ -1,5 +1,6 @@
 -- Warthog(Boar) by KrupnoPavel (MIT)
 -- Changed to Boar and tweaked by Kaadmy (WTFPL) and MoNTE48 (LGPLv3)
+
 mobs:register_mob("mobs_animal:pig", {
 		type = "animal",
 		passive = false,
@@ -55,8 +56,9 @@ mobs:register_mob("mobs_animal:pig", {
 
 mobs:spawn({
 	name = "mobs_animal:pig",
-	nodes = {"default:dirt", "default:sand", "default:snowblock", "default:dirt_with_snow", "default:dirt_with_grass"},
+	nodes = {"default:dirt", "default:sand", "default:redsand", "default:snow", "default:snowblock", "default:dirt_with_snow", "default:dirt_with_grass"},
 	min_light = 5,
+	interval = 30,
 	chance = 15000,
 	min_height = 0,
 	max_height = 31000,
